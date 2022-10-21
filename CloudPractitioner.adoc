@@ -1,0 +1,768 @@
+= Cloud Practitioner
+:doctype: book
+:docinfo1:
+:experimental:
+:description: AWS Cloud Practitioner Exam Notes
+:keywords: notes, AWS, Cloud Practitioner
+:toc: left
+ifdef::env-github,safe-mode-secure[]
+:toc:
+:toc-placement!:
+endif::[]
+AWS Cloud Practitioner Exam Notes
+
+[.button.api]#<<README.adoc#ToDo, Back>>#
+
+== Basics
+
+Benifits::
+* Economies of Scale
+// the square here
+1. Agility
+2.
+
+
+
+Deployment Models::
+* IaaS - this is aws, but really think web hosting like GoDaddy
+* SaaS - this is the product
+* PaaS - this is the dev tools side of things, think WordPress
+
+Regions::
+There are
+* regions (us-east-1)
+** these are physical locations
+* availability zones (us-east-1a, us-east-1b...)
+** this often includes multiple data centers in one sone
+* edge locations (cloudfront), used for caching
+
+
+- [ ] Remember the dif
+
+
+== Compute Services
+
+
+The spin up machine is called an Amazon Machine Instance (AMI) like AWS Linux 2, or Ubuntu
+
+==== Billing Types
+
+* Spot
+** Spot is the extra servers for AWS
+** Spot can save up to 90%
+** Spot is charged at the beginning of the hour
+* Reserved
+** This is a 1 or 3 year commitment
+** This can save up to 75%
+** Capacity is saved in an availability zone
+** Reserved can also be bought as a convertible instance
+*** This is if you want to update or upgrade OS
+*** This can save up to 54%
+* Dedictated Host
+** Dedicated hosts are a full server
+** This is generally for compliance or server based keys like microsoft
+** Can save up to a 70% discount
+** This is different from a dedicated _instance_ which would run _on_ a host
+
+* Savings Plans
+** This is a commitment to usage, not a host
+** This is shared across multiple instances and compute plans (like lambdas)
+** This can save up to 72%
+
+==== Load Balancers
+* Load balancers are different from auto scaling
+* There are 4 types of load balancers
+1. classic
+2. appication
+3. gateway
+4. network
+
+TODO: look at these
+
+
+=== Lambdas
+
+* Lambdas have a 15 minute timeout
+* Lambda is charged by compute time and request count
+* Lambdas are part of the "always free"
+** Even after the trial period, you get 1 million free requests
+
+
+== Storage Services
+
+=== S3
+
+* S3 security is provided through
+1. Access Control Lists (ACLs)
+2. Bucket policies
+3. Access point policies
+
+* S3 allows for versioning
+* S3 has access logs as well
+* S3 is a regional service but the bucket name is globally unique
+
+* Use Cases
+** Static Websites
+** Data Archives
+** Analytics
+** Mobile Applications
+
+=== Availability and Durability
+* S3 Standard provides eleven 9s of durability
+* S3 Standard provides four 9s of availability
+
+* This is possible because data within a region is replicated across multiple servers
+* You can optionally setup cross-region duplication
+
+=== Storage Classes
+* S3 Standard
+** general purpose, high availability and throughput
+* S3 Intelligent Tiering
+** This looks at your data and usage to automatically move your data to the most effective storage class
+* S3 standard infrequent access
+** This is slightly cheaper than S3 standard
+** This is for infrequent access but provided milisecond access when necessary
+* S3 Standard One-Zone Infrequent access
+** This can save 20% compared to Infrequent Access
+** This is recommended for data that can be easily recreated
+* S3 Glacier
+** This is for long term storage
+** Data retrieval takes a lot longer
+** There are 3 retrieval options, 1-5min, 3-5hr, or 5,12 hr
+** Recommended for long term backups
+* S3 Glacier Deep Archive
+** This is the cheapest option
+** This has multiple AZs, but takes 12 or 48hr
+** Recommended for usage 1 or 2 times per year for things like compliance
+* S3 Outposts
+** This is recommended for workloads with local data access
+** Or for demand that requires data to stay close to your local architecture
+
+== Additional Storage Options
+
+=== EC2 Storage
+All ec2 must have a root drive
+
+This is
+Elastic Block Store (EBS) or
+Instance Store or
+Elasitc File System (EFS)
+
+* EBS data is persistance
+** These can be transferred
+** These can only be attached to one instance at once
+** The cannot be attaches to another AZ without being copied
+
+* Instance Store volumes are ephemral
+** This is local storage that is physically attached to the host computer
+** The data does not persist, but this is the fastest solution for storage
+
+* EFS can be attached to multiple drives at once
+** EFS is a serverless file store like google drive
+** This exists across multiple regions (not just AZ)
+** This is linux only
+
+=== Storage Gateway
+This is a hybrid storage solution meaning local and in the cloud
+
+This is useful for backups with low latency
+
+=== AWS Backup
+This is a catchall service for EV2, EBS, EFS, and more
+This is usually a scheduled backup
+
+
+== Content Delivery
+
+=== Cloudfront
+The cache service
+
+* This is delivered directly if in the same edge location/distribution cache
+* Otherwise this is cached in the edge location after requesting from the origin
+
+Cloudfront has security like DDoS protection and IP blocking for regions
+
+=== AWS Global Accelerator
+This improves availability and latency by sending traffic through the AWS global network
+to provide up to a 60% increase in latency
+
+=== AWS S3 Transfer Acceleration
+This utilizes cloudfront's edge location to increase uploads across long distances
+
+
+== Networking Services
+
+=== VPC
+VPC can be peer connected, this works on the AWS private network
+
+
+=== Additional Networking Services
+* Route 53 the standard connection method
+* Direct Connect is a physical connection to AWS for hybrid models
+** This is for large datasets
+** Business-critical data that can bypass the ISP
+* AWS VPN is also for hybrid but also cheaper than Direct Connect bc its a vpn on the ISP
+** This uses the Virtual Private Gateway on the AWS side
+** This customer gateway is on the customer side
+
+
+== Databases
+
+=== RDS
+* This is good for datasets that have relationships
+* This is Aurora, Prostgres, MySQL and more
+* These allow for read replicecas for quick reading across regions
+* Useful for OracleDB
+
+=== Amazon Autora
+* This **only** supports MySQL and Postgres
+* This is 5x faster than MySQL and 3x faster than Postgres
+* This automatically scales
+* This is managed by RDS
+
+=== DynamoDB
+* A fully managed NoSQL db
+
+=== DocumentDB
+* A fully managed MongoDB compatible db
+
+=== ElastiCache
+* In-memory datastore
+* Compatible with Redis
+
+=== Neptune
+* A graph database service
+* This is used for highly relational dbs like for social networks
+
+
+== Migration and Transfer Services
+
+CAUTION:: more study needed
+
+=== DMS
+* Helps to migrate on premises db to AWS
+* Supports homogeneous or heterogeneous migration (Oracle to Oracle, or to SQLServer)
+** Oracle To Aurora MySQL
+** Oracle to Oracle using EC2
+** RDS Oracle to Autota MySQL
+
+
+=== Server Migration Service (SMS)
+When migrated, the new service is stored as am AMI
+
+
+=== AWS Snow Family
+This transfers **large** data from on premises to cloud (not over the internet)
+* Snowcone
+** The smallest of the datatransfer devices, 8TB of data, off-line or online using datasync
+* Snowball
+** A petabyte of data transferred in or out
+** Snowball and snowball edge are used to add local processing in a disconnected or remote device (EC2 or Lambda)
+*** Remember that edge supports EC2 or lambdas
+* Snowmobile
+** Petabytes or exobytes of data sent in a shipping container
+** The data is loaded into an S3 bucket
+** This includes an gps, alarms, video survailance, and a security escort
+
+=== DataSync
+Move things like S3 or EFS
+10x faster than other services
+
+Migrate onpremise using things like Direct Connect or the internet
+Move across region or account with AWS Services
+
+
+== Analytics
+
+* Redshift
+** The main warehouse service (supports Exabytes of data)
+* Athena
+** Analyze data in S3
+** Considered Serverless
+** Charged per query
+* Glue
+** Generated Extract Transfer and Load (ETL) code
+* Kinesis
+** Analyze real time streaming data like click streams or videos
+** This is also useful for logging your analytics services
+* Elastic MapReduce (EMR)
+** Helps to process large data
+** Dataminig, processing, machine learning, more
+** Works with Hadoop which can process across multiple clusters of computers
+** Works with other frameworks like apache spark
+* Data Pipeline
+** moves data across compute and storage services or on premise
+** This can transfer on intervals or conditions
+** Example - S3 to redshift
+** This sends notification based on status
+* QuickSight
+
+
+== Machine Learning
+
+
+=== Rekognition
+Automated image and video analysis.
+
+* Image and video analysis
+* Identify custom images and labels in videos
+* Face and text detection in images and videos
+
+=== Comprehend
+The AWS NLP service
+
+* useful for sentiment
+
+=== Polly
+Text to Speech
+* Mimics natural-sounding human speech in many languages
+* Can create a custom voice
+
+=== SageMaker
+The flagship machine learning service
+
+* for buildiung, training and deploying
+* can be used with deep learning AMIs
+* useful for a recommendation engine
+
+
+=== Translate
+Language translation
+
+
+=== Lex
+For conversational interfaces like chatbots
+
+* this powers amazon Alexa
+
+
+== Servives
+
+=== EC2
+
+Deployment::
+
+1. Console
+2. Deploy using a AMI
+3. Deploy directly to EC2
+4. 750 free compute hours on the free tier
+
+
+Access::
+1. Through the console
+2. With SSH
+3. With EC2 Instance Connect
+4. AWS Systems Manager - using the session manager - this is via web browser or with AWS CLI
+
+Billing::
+
+* On Demanmd - the most common use case
+** you can still reserve capacity to be available
+* Spot instances - only whenc
+*
+
+== Developer Tools
+
+=== Cloud 9
+Integrated Development environment
+
+* This comes preconfigured with the with the AWS SDK
+
+=== Code COmmit
+The source control tool
+
+=== Code Build
+Build and test application source code.
+This produces build artifacts.
+
+* run parallell test streams
+
+=== Code Deploy
+Manage deployment to cloud and on premises servers
+
+* Code deploy provides rolling deployment for EC2
+
+=== Code Pipeline
+Automate the software release pipeline
+
+=== X-Ray
+A debugging and analysis tool for productions pipeline
+* Map application components
+* view requests end to end
+* Map requests made to services and view the generated items
+
+=== CodeStar
+Work collaboratively on development project
+This includes an issue tracking dashboard
+
+
+== Dev and Infra Management
+CAUTION: What is OpsWorks?
+
+* Cloudformation
+* Elastic Beanstalk
+** This is cloud only, not on premises
+* OpsWorks
+** Deploy code and manage local on on premises EC2
+** Works with **Chef** or **Puppet** to automate the server configuration
+
+
+== Messaging and Integration services
+
+TIP: Loose coupling is the helps reduce the risk of cascading failures
+
+
+== Auditing Monitoring and Logging
+
+* Cloud Watch
+* Cloud Trail
+** Track activity and api calls within your AWS account
+** Identify which user made changes
+** Tracking the user, IP, access key, region, etc
+
+
+== Additional Service
+
+* Amazon Workspaces
+** Host virtual workspaces in the cloud
+** Windows or Linux
+
+* Amazon Connect
+** Build contact center or help desk in the cloud
+** Monitor your agents
+** setup 800  numbers
+
+
+== To Review
+* EC2 Storage Options
+* Snowball and different connection options (like Data)
+
+
+== Security and Compliance
+TIP: Share responsibly model - the shared responsibility between you and aws
+Well architected framework - 6 key concepts to lean on
+
+WARNING: this is 25% of the exam
+
+Shared responsibility is
+* AWS Security of the cloud
+* You provide Security in the cloud
+
+
+=== Well Architected Framework
+
+Caution: you should know the 6 pillars
+
+==== Six pillars
+* Operational Excellence
+** anticipate failure
+** use IaaS
+* Secuirty
+** Automate security
+** Use logging each
+** secure each part
+* Reliability
+** Make sure you services can recover quickly
+** Scale horizontally rather than vertically
+** test all procedures
+** reduce idle resources
+* Performance Efficiency
+** Use serverless/managed resource/architectures first
+** Use multi-region services
+** delegate tasks so that the team works only on necessary resources
+* Cost optimization
+** use only what you need
+* Sustainability
+** understand and measure you impact
+
+=== IAM Users
+
+Caution: EC2 has its own security groups that are separate from IAM groups
+
+TIP: Remember the tasks that only the root user can do (TODO: double check this)
+
+* Identities define who can access
+* Access defines what users can do
+** AWS Managed Policies
+** Customer Policies
+** Permissions boundaries
+* A group is a collection of users
+
+=== Roles
+TIPS: roles are like putting on a hat
+
+Roles can be assigned to users and services
+* The user assumes a role
+* Roles can be assigned from user to another AWS account
+
+
+=== Policies
+These are used to assign roles
+
+=== IAM Credentials Report
+List all users, status, access, keys, and mfa
+
+* often used for autditing and compliance
+
+
+== Application Security Services
+These are software based security tools.
+
+=== Web Application Firewall (WAF)
+
+* Protects agains sql inject
+* Protects across cross site scripting
+
+* Can be deployed to an EC2 in fron of the Application Load Balanceer or CloudFront
+
+=== Shield
+A managed DDoS protection service
+* Shield is an always on service
+* Shield Standard
+** Free
+** Protects against standard attacks
+* Shield Advanced
+** Paid
+** Provides enhanced protection and 24/7 access to AWS experts
+** Supported
+*** CloudFront
+*** Route53
+*** Elastic Load Balancing
+*** AWS Global Accelerator
+
+
+=== Macie
+Discover and protect sensetive data
+TIP: Macie is for S3
+
+* uses machine learning
+* works with S3
+* Identifies PII
+
+== Additional Security Servives
+=== Config
+Set guardrails within
+
+CAUTION: test this by setting a guardrail
+
+Create and audit standards within you AWS account
+* Set preferred configs
+* Track these across time
+* Store to S3
+* Can send notification when configurations change
+
+Example::
+You have system level configurations stored in your EC2. Config can track changes to these
+
+=== Guard Duty
+
+Uses machine learning to identify common behaviors
+* Build in detection for access to
+** EC2 S3, and IAM
+* Can review
+** CloudTrail, VPC Flow Logs, and DNS logs
+
+Example::
+Runs api calls though autimated anomaly detection
+
+=== Inspector
+Check EC2 for the lastes patches and network configuration
+* this is installed in the EC2
+* can detect things like remote root login or software vanuruabilities
+
+Examples::
+You accidentally left a port open on your EC2
+
+
+=== Artifact
+A central repository for compliance reports
+includes SOC or PCI compliance reports
+
+Example::
+AWS Certification for ISO compliance and supply a readonly document to the asking party
+
+
+=== Cognito
+Control access to your AWS applications
+
+== Data Encryption
+
+
+=== KMS
+Generate and store encryption keys
+
+* This can also generate keys
+* This is automatically enabled for certain services like
+** Cloud trail logs
+** Glacier
+** Storage Gateway
+
+
+=== Cloud HSM
+A hardare secuiry module used to generate encryption keys
+* AWS proved the encryption hardawre
+
+=== Secrets Manager
+Manage and retrieve secrets
+* integrates with RDS, RedShift, and Applications Manager
+
+
+
+== Pricing
+There are 3 fundamental drivers of cost
+
+TIP: Read the pricing White Paper
+
+1. Compute
+2. Storage
+3. Outbound data transfer
+
+
+=== Offer Types
+1. 12 months free
+2. Always free
+3. Trials
+
+
+==== EC2 Pricing
+1. On Demand
+2. Savings Plan - compute plan for usage
+3. Reserved instances - commit to usage for 1 or 3 years regardless of usage
+4. Spot Instances
+5. Dedicated hosts
+
+
+==== Lambda Pricing
+1. Number of requests
+2. Code execution time
+3. Always free - 1million requests per month
+
+==== S3 Pricing
+1. Storage class
+2. Storage usage
+3. Data transfer - but within the same AWS region is free
+4. Requests
+
+==== RDS Pricing
+1. Running clock hours
+2. Type of database
+3. Storage
+4. Purchase type - on demand vs reserved
+5. count of databases
+6. API requests
+7. Deployment type - Single or multiple AZs
+8. Data transfers - inbound is free but outbound is not
+
+=== TCO
+Total cost of ownership
+
+> how much does it cost to transfer to AWS
+
+> how can I  reduce my total cost of ownership
+
+
+=== Application Discovvery Service
+Plan migration to the AWS cloud
+
+=== AWS Price List API
+An API to query the price list
+This can also send alerts for price changes
+
+
+== Understanding Bills
+
+=== Bugets
+Set custom bugets to alert overage of your set ammount
+
+
+* Cost
+* Usage
+* Reservation
+
+Can notify
+** Email
+** SNS
+** Chatbots like Slack
+
+
+===  Coveratge and Usage Reports
+Includes the most comprehensive data about what is happening in AWS
+
+* downlaod the report to S3
+* list usage for each service catagory
+* aggregate usage data on daily, hourly, or monthly level
+
+
+=== Cost Explorer
+Visualize the last 12 months and forcast up to 3 months
+
+Example::
+Analize you EC2 usage over the last 7, 30, or 60 days to consider options for saving plans
+
+
+== Governance Services
+Manage all of your AWS accounts
+
+=== Organizations
+Orgnaize multiple AWS accounts under on umbrella
+
+* Group Accounts
+* Single payment for all accounts
+* Automate account creation
+* Centrally manage and applly access policies across accounts
+
+The root account is called the master payer account
+* This is payed for with **consolidated billing**
+
+Service Control Polocies (SPCs)::
+enforce permissions everyone in the organization to follow
+
+Organization Units (UIs)::
+Like IT, Shared Services, and Marketing
+
+Member Accounts::
+The standard AWS accounts that contain the AWS resources
+
+=== Control Tower
+Sits above organizations to ensure the accounts comply with company policies
+
+* Works with organizations by automatically setting them up
+
+Example::
+Disallow public write access to S3 access for all AWS accounts.
+This would enable cross account securty audits or
+preventing or detecting security issues through manatory or optinal guardrails
+
+=== Systems Manager
+Visability or control across AWS resources
+
+* Automate tasks
+* group resources to take actions
+* patch and run commands on multiple EC2 or RDS instances
+
+Examples::
+Security patch your all your EC2 instances on a schedule
+
+
+=== Trusted Advisor
+Real time guidence to help provision resources based on AWS best practivces
+:fn-business-enterprise: footnote:[Only available in Business or Enterprise accounts]
+
+Examples
+* Check for unrestricted access on EC2 ports
+* Check S3 buckets for public access
+* Check for MFA on the root account
+* Check IAM password policy {fn-business-enterprise}
+* RDS public access
+* Service usage over 80% of the limit {fn-business-enterprise}
+* Exposed access keys {fn-business-enterprise}
+* Cloudfront delivery optamization {fn-business-enterprise}
+
+=== Lisence Manager
+Manage on premise licences
+* Oracle, Microsoft, etc
+
+=== Certificate Manager
+Provision and manage SSL and TLS certificates
+
+
